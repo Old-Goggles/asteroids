@@ -1,5 +1,6 @@
 import pygame
 import sys
+import os
 from constants import *
 from player import Player
 from asteroid import Asteroid
@@ -15,6 +16,16 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    background_path = os.path.join(current_dir, "background.jpg")
+
+    try:
+        background = pygame.image.load(background_path).convert()
+        background = pygame.transform.scale(background, (SCREEN_WIDTH, SCREEN_HEIGHT))
+    except pygame.error as e:
+        print(f"Error loading background: {e}")
+        wbackground = None
 
     score = 0
     consecutive_hits = 0
@@ -68,6 +79,10 @@ def main():
                 multiplier = 1
 
         screen.fill((0, 0, 0))
+
+        if background:
+            screen.blit(background, (0, 0))
+
         for sprite in drawable:
             sprite.draw(screen) 
 

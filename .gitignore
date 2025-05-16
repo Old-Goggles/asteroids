@@ -1,2 +1,5 @@
 venv/
 __pycache__/
+
+# Game assets not included in repository
+background.jpg
