@@ -5,6 +5,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+from ui import display_score
 
 def main():
     print("Starting Asteroids!")
@@ -14,6 +15,10 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
+
+    score = 0
+    consecutive_hits = 0
+    multiplier = 1
 
     updateable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
@@ -41,14 +46,33 @@ def main():
                 print("Game over!")
                 sys.exit()    
 
-            for shot in shots:
+        for shot in shots:
+            for asteroid in asteroids:
                 if shot.collision(asteroid):
+                    consecutive_hits += 1
+                    multiplier = 1 + (consecutive_hits // 10)
+                    if asteroid.radius >= 40:  
+                        score += 10 * multiplier
+                    elif asteroid.radius >= 20:  
+                        score += 5 * multiplier
+                    else:  
+                        score += 1 * multiplier
                     shot.kill()
                     asteroid.split()
+
+        for shot in shots.copy():
+            if (shot.position.x < 0 or shot.position.x > SCREEN_WIDTH or 
+                shot.position.y < 0 or shot.position.y > SCREEN_HEIGHT):
+                shot.kill()
+                consecutive_hits = 0
+                multiplier = 1
 
         screen.fill((0, 0, 0))
         for sprite in drawable:
             sprite.draw(screen) 
+
+        display_score(screen, score, multiplier, consecutive_hits)
+        
         pygame.display.flip()
 
         dt = clock.tick(60) / 1000
