@@ -71,13 +71,6 @@ def main():
                     shot.kill()
                     asteroid.split()
 
-        for shot in shots.copy():
-            if (shot.position.x < 0 or shot.position.x > SCREEN_WIDTH or 
-                shot.position.y < 0 or shot.position.y > SCREEN_HEIGHT):
-                shot.kill()
-                consecutive_hits = 0
-                multiplier = 1
-
         screen.fill((0, 0, 0))
 
         if background:
